@@ -28,34 +28,7 @@ string breadthFirstSearch(string const initial, string const goal, int &numOfSta
 
 	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
 
-	auto q = std::deque<Node>();
-	q.push_front(Node{ initial, "" });
-	auto v = std::unordered_set<string>{ initial };
 
-	while (!q.empty())
-	{
-		Node current = q.back();
-
-		if (current.state == goal)
-		{
-			cout << "!!!!!! found = " << current.state << endl;
-			cout << "visited=" << v.size() << endl;
-			cout << "q.size=" << q.size() << endl;
-			return current.path;
-		}
-
-		q.pop_back();
-
-		auto children = current.spawn();
-		for (Node child : children)
-		{
-			if (v.end() == v.find(child.state))
-			{
-				v.insert(child.state);
-				q.push_front(child);
-			}
-		}
-	}
 
 	return "";
 }
@@ -67,16 +40,9 @@ string breadthFirstSearch(string const initial, string const goal, int &numOfSta
 // Move Generator:  
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
-string breadthFirstSearch_with_VisitedList(string const initialState, string const goalState, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime) {
+string breadthFirstSearch_with_VisitedList(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime) {
 	string path;
 	clock_t startTime;
-	//add necessary variables here
-
-
-	//algorithm implementation
-	// cout << "------------------------------" << endl;
- //    cout << "<<breadthFirstSearch_with_VisitedList>>" << endl;
- //    cout << "------------------------------" << endl;
 
 	startTime = clock();
 
@@ -84,11 +50,33 @@ string breadthFirstSearch_with_VisitedList(string const initialState, string con
 	maxQLength = rand() % 800; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY.
 	numOfStateExpansions = rand() % 600; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY
 
+	auto q = std::deque<Node>();
+	q.push_back(Node{ initial, "" });
+	auto v = std::unordered_set<string>{ initial };
 
+	while (!q.empty())
+	{
+		Node current = q.front();
+
+		if (current.state == goal)
+		{
+			return current.path;
+		}
+		q.pop_front();
+
+		auto children = current.spawn();
+		for (Node child : children)
+		{
+			if (v.end() == v.find(child.state))
+			{
+				v.insert(child.state);
+				q.push_back(child);
+			}
+		}
+	}
 
 //***********************************************************************************************************
 	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
-	path = "DDRRLLLUUURDLUDURDLUU";  //this is just a dummy path for testing the function           
 	return path;
 
 }

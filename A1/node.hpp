@@ -54,7 +54,7 @@ private:
 			3, 4, 5, 
 			6, 7, 8 
 		};
-		return std::find(v.begin(), v.end(), pos()) != v.end();
+		return (path.size() == 0 || path.back() != 'D') && contains(v, pos());
 	}
 
 	Node move_up()
@@ -72,7 +72,7 @@ private:
 			3, 4,
 			6, 7
 		};
-		return std::find(v.begin(), v.end(), pos()) != v.end();
+		return (path.size() == 0 || path.back() != 'L') && contains(v, pos());
 	}
 
 	Node move_right()
@@ -89,7 +89,7 @@ private:
 			0, 1, 2,
 			3, 4, 5
 		};
-		return std::find(v.begin(), v.end(), pos()) != v.end();
+		return (path.size() == 0 || path.back() != 'U') && contains(v, pos());
 	}
 
 	Node move_down()
@@ -107,7 +107,7 @@ private:
 			4, 5,
 			7, 8
 		};
-		return std::find(v.begin(), v.end(), pos()) != v.end();
+		return (path.size() == 0 || path.back() != 'R') && contains(v, pos());
 	}
 
 	Node move_left()
@@ -115,5 +115,10 @@ private:
 		auto n = Node{ state, path + "L" };
 		std::swap(n.state[n.pos() - 1], n.state[n.pos()]);
 		return n;
+	}
+
+	bool contains(std::vector<int> const& v, int n)
+	{
+		return std::find(v.begin(), v.end(), n) != v.end();
 	}
 };
