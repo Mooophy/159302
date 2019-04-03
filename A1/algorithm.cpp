@@ -1,10 +1,11 @@
+#include <deque>
+#include <unordered_set>
 
-
+#include "node.hpp"
 #include "algorithm.h"
 
+
 using namespace std;
-
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -13,30 +14,51 @@ using namespace std;
 // Move Generator:  
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
-string breadthFirstSearch(string const initialState, string const goalState, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime){
-    string path;
-	clock_t startTime;
-    //add necessary variables here
-
-
-    //algorithm implementation
-	// cout << "------------------------------" << endl;
- //    cout << "<<breadthFirstSearch>>" << endl;
- //    cout << "------------------------------" << endl;
-    
-	startTime = clock();
+string breadthFirstSearch(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime) {
 	
+	string path;
+	clock_t startTime;
+
+
+
+	startTime = clock();
+
 	srand(time(NULL)); //RANDOM NUMBER GENERATOR - ONLY FOR THIS DEMO.  YOU REALLY DON'T NEED THIS! DISABLE THIS STATEMENT.
-	maxQLength= rand() % 1500; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY.
+	maxQLength = rand() % 1500; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY.
 	numOfStateExpansions = rand() % 800; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY
 
-	
-	
-//***********************************************************************************************************
-	actualRunningTime = ((float)(clock() - startTime)/CLOCKS_PER_SEC);
-	path = "DDRRLLLUUURDLUDURDLUU";  //this is just a dummy path for testing the function           
-	return path;		
-		
+	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
+
+	auto q = std::deque<Node>();
+	q.push_front(Node{ initial, "" });
+	auto v = std::unordered_set<string>{ initial };
+
+	while (!q.empty())
+	{
+		Node current = q.back();
+
+		if (current.state == goal)
+		{
+			cout << "!!!!!! found = " << current.state << endl;
+			cout << "visited=" << v.size() << endl;
+			cout << "q.size=" << q.size() << endl;
+			return current.path;
+		}
+
+		q.pop_back();
+
+		auto children = current.spawn();
+		for (Node child : children)
+		{
+			if (v.end() == v.find(child.state))
+			{	
+				v.insert(child.state);
+				q.push_front(child);
+			}
+		}
+	}
+
+	return "";
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -46,30 +68,30 @@ string breadthFirstSearch(string const initialState, string const goalState, int
 // Move Generator:  
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
-string breadthFirstSearch_with_VisitedList(string const initialState, string const goalState, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime){
-    string path;
+string breadthFirstSearch_with_VisitedList(string const initialState, string const goalState, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime) {
+	string path;
 	clock_t startTime;
-    //add necessary variables here
+	//add necessary variables here
 
 
-    //algorithm implementation
+	//algorithm implementation
 	// cout << "------------------------------" << endl;
  //    cout << "<<breadthFirstSearch_with_VisitedList>>" << endl;
  //    cout << "------------------------------" << endl;
 
 	startTime = clock();
-	
+
 	srand(time(NULL)); //RANDOM NUMBER GENERATOR - ONLY FOR THIS DEMO.  YOU REALLY DON'T NEED THIS! DISABLE THIS STATEMENT.
-	maxQLength= rand() % 800; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY.
+	maxQLength = rand() % 800; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY.
 	numOfStateExpansions = rand() % 600; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY
 
 
-	
+
 //***********************************************************************************************************
-	actualRunningTime = ((float)(clock() - startTime)/CLOCKS_PER_SEC);
+	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
 	path = "DDRRLLLUUURDLUDURDLUU";  //this is just a dummy path for testing the function           
-	return path;		
-		
+	return path;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -79,31 +101,31 @@ string breadthFirstSearch_with_VisitedList(string const initialState, string con
 // Move Generator:  
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
-string progressiveDeepeningSearch_No_VisitedList(string const initialState, string const goalState, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime, int ultimateMaxDepth){
-    string path;
+string progressiveDeepeningSearch_No_VisitedList(string const initialState, string const goalState, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime, int ultimateMaxDepth) {
+	string path;
 	clock_t startTime;
-    //add necessary variables here
+	//add necessary variables here
 
 
-    //algorithm implementation
+	//algorithm implementation
 	// cout << "------------------------------" << endl;
  //    cout << "<<progressiveDeepeningSearch_No_VisitedList>>" << endl;
  //    cout << "------------------------------" << endl;
 
 	startTime = clock();
 	srand(time(NULL)); //RANDOM NUMBER GENERATOR - ONLY FOR THIS DEMO.  YOU REALLY DON'T NEED THIS! DISABLE THIS STATEMENT.
-	maxQLength= rand() % 500; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY.
+	maxQLength = rand() % 500; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY.
 	numOfStateExpansions = rand() % 600; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY
 
-	
-	
+
+
 //***********************************************************************************************************
-	actualRunningTime = ((float)(clock() - startTime)/CLOCKS_PER_SEC);
+	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
 	path = "DDRRLLLUUURDLUDURDLUUDDRRLLLUUURDLUDURDLUUDDRRLLLUUURDLUDURDLUUDDRRLLLUUURDLUDURDLUUDDRRLLLUUURDLUDURDLUUDDRRLLLUUURDLUDURDLUUDDRRLLLUUURDLUDURDLUUDDRRLLLUUURDLUDURDLUU";  //this is just a dummy path for testing the function           
-	return path;		
-		
+	return path;
+
 }
-	
+
 
 
 
@@ -114,35 +136,35 @@ string progressiveDeepeningSearch_No_VisitedList(string const initialState, stri
 // Move Generator:  
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
-string uniformCost_ExpandedList(string const initialState, string const goalState, int &numOfStateExpansions, int& maxQLength, 
-                               float &actualRunningTime, int &numOfDeletionsFromMiddleOfHeap, int &numOfLocalLoopsAvoided, int &numOfAttemptedNodeReExpansions){
-											 
-   string path;
-   clock_t startTime;
-   
-   numOfDeletionsFromMiddleOfHeap=0;
-   numOfLocalLoopsAvoided=0;
-   numOfAttemptedNodeReExpansions=0;
+string uniformCost_ExpandedList(string const initialState, string const goalState, int &numOfStateExpansions, int& maxQLength,
+	float &actualRunningTime, int &numOfDeletionsFromMiddleOfHeap, int &numOfLocalLoopsAvoided, int &numOfAttemptedNodeReExpansions) {
+
+	string path;
+	clock_t startTime;
+
+	numOfDeletionsFromMiddleOfHeap = 0;
+	numOfLocalLoopsAvoided = 0;
+	numOfAttemptedNodeReExpansions = 0;
 
 
-    // cout << "------------------------------" << endl;
-    // cout << "<<uniformCost_ExpandedList>>" << endl;
-    // cout << "------------------------------" << endl;
-	actualRunningTime=0.0;	
+	// cout << "------------------------------" << endl;
+	// cout << "<<uniformCost_ExpandedList>>" << endl;
+	// cout << "------------------------------" << endl;
+	actualRunningTime = 0.0;
 	startTime = clock();
 	srand(time(NULL)); //RANDOM NUMBER GENERATOR - ONLY FOR THIS DEMO.  YOU REALLY DON'T NEED THIS! DISABLE THIS STATEMENT.
-	maxQLength= rand() % 200; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY.
+	maxQLength = rand() % 200; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY.
 	numOfStateExpansions = rand() % 200; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY
 
 
-	
-	
+
+
 //***********************************************************************************************************
-	actualRunningTime = ((float)(clock() - startTime)/CLOCKS_PER_SEC);
+	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
 	path = "DDRRLLLUUURDLUDURDLUU"; //this is just a dummy path for testing the function
-	             
-	return path;		
-		
+
+	return path;
+
 }
 
 
@@ -153,35 +175,35 @@ string uniformCost_ExpandedList(string const initialState, string const goalStat
 // Move Generator:  
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
-string aStar_ExpandedList(string const initialState, string const goalState, int &numOfStateExpansions, int& maxQLength, 
-                               float &actualRunningTime, int &numOfDeletionsFromMiddleOfHeap, int &numOfLocalLoopsAvoided, int &numOfAttemptedNodeReExpansions, heuristicFunction heuristic){
-											 
-   string path;
-   clock_t startTime;
-   
-   numOfDeletionsFromMiddleOfHeap=0;
-   numOfLocalLoopsAvoided=0;
-   numOfAttemptedNodeReExpansions=0;
+string aStar_ExpandedList(string const initialState, string const goalState, int &numOfStateExpansions, int& maxQLength,
+	float &actualRunningTime, int &numOfDeletionsFromMiddleOfHeap, int &numOfLocalLoopsAvoided, int &numOfAttemptedNodeReExpansions, heuristicFunction heuristic) {
+
+	string path;
+	clock_t startTime;
+
+	numOfDeletionsFromMiddleOfHeap = 0;
+	numOfLocalLoopsAvoided = 0;
+	numOfAttemptedNodeReExpansions = 0;
 
 
-    // cout << "------------------------------" << endl;
-    // cout << "<<aStar_ExpandedList>>" << endl;
-    // cout << "------------------------------" << endl;
-	actualRunningTime=0.0;	
+	// cout << "------------------------------" << endl;
+	// cout << "<<aStar_ExpandedList>>" << endl;
+	// cout << "------------------------------" << endl;
+	actualRunningTime = 0.0;
 	startTime = clock();
 	srand(time(NULL)); //RANDOM NUMBER GENERATOR - ONLY FOR THIS DEMO.  YOU REALLY DON'T NEED THIS! DISABLE THIS STATEMENT.
-	maxQLength= rand() % 200; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY.
+	maxQLength = rand() % 200; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY.
 	numOfStateExpansions = rand() % 200; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY
 
 
-	
-	
+
+
 //***********************************************************************************************************
-	actualRunningTime = ((float)(clock() - startTime)/CLOCKS_PER_SEC);
+	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
 	path = "DDRRLLLUUURDLUDURDLUU"; //this is just a dummy path for testing the function
-	             
-	return path;		
-		
+
+	return path;
+
 }
 
 

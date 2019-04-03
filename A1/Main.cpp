@@ -262,13 +262,16 @@ void AnimateSolution(string const initialState, string const goalState, string p
       displayBoard(strState);
       
       step++;
+
+
+	  system("pause");
 	}
 	
 	delete p; //clear memory	
 	cout << endl << "Animation done." << endl;
 	cout << "--------------------------------------------------------------------" << endl;
 	
-
+	
 }
 
 
