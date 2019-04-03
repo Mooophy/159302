@@ -264,7 +264,7 @@ void AnimateSolution(string const initialState, string const goalState, string p
       step++;
 
 
-	  system("pause");
+	  //system("pause");
 	}
 	
 	delete p; //clear memory	

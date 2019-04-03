@@ -3,7 +3,6 @@
 #include "node.hpp"
 #include "algorithm.h"
 
-
 using namespace std;
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -15,21 +14,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////////////////
 string breadthFirstSearch(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime) {
 
-	string path;
-	clock_t startTime;
-
-
-
-	startTime = clock();
-
-	srand(time(NULL)); //RANDOM NUMBER GENERATOR - ONLY FOR THIS DEMO.  YOU REALLY DON'T NEED THIS! DISABLE THIS STATEMENT.
-	maxQLength = rand() % 1500; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY.
-	numOfStateExpansions = rand() % 800; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY
-
-	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
-
-
-
+	actualRunningTime = 55555;
 	return "";
 }
 
@@ -41,27 +26,26 @@ string breadthFirstSearch(string const initial, string const goal, int &numOfSta
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 string breadthFirstSearch_with_VisitedList(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime) {
-	string path;
-	clock_t startTime;
+	
+	maxQLength = numOfStateExpansions = 0;
+	auto startTime = clock();
 
-	startTime = clock();
-
-	srand(time(NULL)); //RANDOM NUMBER GENERATOR - ONLY FOR THIS DEMO.  YOU REALLY DON'T NEED THIS! DISABLE THIS STATEMENT.
-	maxQLength = rand() % 800; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY.
-	numOfStateExpansions = rand() % 600; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY
-
-	auto q = std::deque<Node>();
-	q.push_back(Node{ initial, "" });
+	auto q = std::deque<Node>{ Node{ initial, "" } };
 	auto v = std::unordered_set<string>{ initial };
+	auto final_path = string("");
 
 	while (!q.empty())
 	{
 		Node current = q.front();
 
+		++numOfStateExpansions;
+
 		if (current.state == goal)
 		{
-			return current.path;
+			final_path = current.path;
+			break;
 		}
+
 		q.pop_front();
 
 		auto children = current.spawn();
@@ -73,12 +57,13 @@ string breadthFirstSearch_with_VisitedList(string const initial, string const go
 				q.push_back(child);
 			}
 		}
+
+		maxQLength = q.size() > maxQLength ? q.size() : maxQLength;
 	}
 
-//***********************************************************************************************************
-	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
-	return path;
+	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);	
 
+	return final_path;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -147,7 +132,7 @@ string uniformCost_ExpandedList(string const initialState, string const goalStat
 
 
 //***********************************************************************************************************
-	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
+	actualRunningTime = 66666666666;
 	path = "DDRRLLLUUURDLUDURDLUU"; //this is just a dummy path for testing the function
 
 	return path;
@@ -186,7 +171,7 @@ string aStar_ExpandedList(string const initialState, string const goalState, int
 
 
 //***********************************************************************************************************
-	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
+	actualRunningTime =77777777;
 	path = "DDRRLLLUUURDLUDURDLUU"; //this is just a dummy path for testing the function
 
 	return path;
