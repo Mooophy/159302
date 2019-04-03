@@ -1,6 +1,5 @@
 #include <deque>
 #include <unordered_set>
-
 #include "node.hpp"
 #include "algorithm.h"
 
@@ -15,7 +14,7 @@ using namespace std;
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 string breadthFirstSearch(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime) {
-	
+
 	string path;
 	clock_t startTime;
 
@@ -51,7 +50,7 @@ string breadthFirstSearch(string const initial, string const goal, int &numOfSta
 		for (Node child : children)
 		{
 			if (v.end() == v.find(child.state))
-			{	
+			{
 				v.insert(child.state);
 				q.push_front(child);
 			}
