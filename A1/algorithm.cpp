@@ -2,6 +2,8 @@
 #include <unordered_set>
 #include "node.hpp"
 #include "algorithm.h"
+#include "priority_queue.hpp"
+#include "shorter.hpp"
 
 using namespace std;
 
@@ -14,8 +16,38 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////////////////
 string breadthFirstSearch(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime) {
 
-	actualRunningTime = 55555;
-	return "";
+	maxQLength = numOfStateExpansions = 0;
+	auto startTime = clock();
+
+	auto q = std::deque<Node>{ Node{ initial, "" } };
+	auto final_path = string("");
+
+	while (!q.empty())
+	{
+		auto current = q.front();
+
+		++numOfStateExpansions;
+
+		if (current.state == goal)
+		{
+			final_path = current.path;
+			break;
+		}
+
+		q.pop_front();
+
+		auto children = current.spawn();
+		for (Node child : children)
+		{
+			q.push_back(child);
+		}
+
+		maxQLength = q.size() > maxQLength ? q.size() : maxQLength;
+	}
+
+	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
+
+	return final_path;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -36,7 +68,7 @@ string breadthFirstSearch_with_VisitedList(string const initial, string const go
 
 	while (!q.empty())
 	{
-		Node current = q.front();
+		auto current = q.front();
 
 		++numOfStateExpansions;
 
@@ -74,28 +106,8 @@ string breadthFirstSearch_with_VisitedList(string const initial, string const go
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 string progressiveDeepeningSearch_No_VisitedList(string const initialState, string const goalState, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime, int ultimateMaxDepth) {
-	string path;
-	clock_t startTime;
-	//add necessary variables here
 
-
-	//algorithm implementation
-	// cout << "------------------------------" << endl;
- //    cout << "<<progressiveDeepeningSearch_No_VisitedList>>" << endl;
- //    cout << "------------------------------" << endl;
-
-	startTime = clock();
-	srand(time(NULL)); //RANDOM NUMBER GENERATOR - ONLY FOR THIS DEMO.  YOU REALLY DON'T NEED THIS! DISABLE THIS STATEMENT.
-	maxQLength = rand() % 500; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY.
-	numOfStateExpansions = rand() % 600; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY
-
-
-
-//***********************************************************************************************************
-	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
-	path = "DDRRLLLUUURDLUDURDLUUDDRRLLLUUURDLUDURDLUUDDRRLLLUUURDLUDURDLUUDDRRLLLUUURDLUDURDLUUDDRRLLLUUURDLUDURDLUUDDRRLLLUUURDLUDURDLUUDDRRLLLUUURDLUDURDLUUDDRRLLLUUURDLUDURDLUU";  //this is just a dummy path for testing the function           
-	return path;
-
+	return "";
 }
 
 
@@ -108,35 +120,57 @@ string progressiveDeepeningSearch_No_VisitedList(string const initialState, stri
 // Move Generator:  
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
-string uniformCost_ExpandedList(string const initialState, string const goalState, int &numOfStateExpansions, int& maxQLength,
-	float &actualRunningTime, int &numOfDeletionsFromMiddleOfHeap, int &numOfLocalLoopsAvoided, int &numOfAttemptedNodeReExpansions) {
+string uniformCost_ExpandedList(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime, int &numOfDeletionsFromMiddleOfHeap, int &numOfLocalLoopsAvoided, int &numOfAttemptedNodeReExpansions) {
 
-	string path;
-	clock_t startTime;
+	auto startTime = clock();
+	numOfStateExpansions = maxQLength = numOfDeletionsFromMiddleOfHeap = numOfLocalLoopsAvoided = numOfAttemptedNodeReExpansions = 0;
 
-	numOfDeletionsFromMiddleOfHeap = 0;
-	numOfLocalLoopsAvoided = 0;
-	numOfAttemptedNodeReExpansions = 0;
+	auto e = std::unordered_set<string>{ };
+	auto q = PriorityQueue<Node>{ Shorter{} };
+	q.push(Node{ initial, "" });
+	auto final_path = string("");
 
+	while (!q.empty())
+	{
+		auto current = q.top();
 
-	// cout << "------------------------------" << endl;
-	// cout << "<<uniformCost_ExpandedList>>" << endl;
-	// cout << "------------------------------" << endl;
-	actualRunningTime = 0.0;
-	startTime = clock();
-	srand(time(NULL)); //RANDOM NUMBER GENERATOR - ONLY FOR THIS DEMO.  YOU REALLY DON'T NEED THIS! DISABLE THIS STATEMENT.
-	maxQLength = rand() % 200; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY.
-	numOfStateExpansions = rand() % 200; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY
+		++numOfStateExpansions;
 
+		if (current.state == goal)
+		{
+			final_path = current.path;
+			break;
+		}
 
+		q.pop();
 
+		if (e.end() != e.find(current.state))
+		{
+			continue;
+		}
 
-//***********************************************************************************************************
-	actualRunningTime = 66666666666;
-	path = "DDRRLLLUUURDLUDURDLUU"; //this is just a dummy path for testing the function
+		e.insert(current.state);
 
-	return path;
+		auto children = current.spawn();
 
+		for (auto child : children)
+		{
+			if (e.end() == e.find(child.state)) 
+			{
+				q.update(child, [child](Node const& c) { return c.state == child.state; });
+			}
+			else 
+			{
+				++numOfLocalLoopsAvoided;
+			}
+		}
+
+		maxQLength = q.size() > maxQLength ? q.size() : maxQLength;
+	}
+
+	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
+
+	return final_path;
 }
 
 
