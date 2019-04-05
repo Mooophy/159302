@@ -105,7 +105,47 @@ string breadthFirstSearch_with_VisitedList(string const initial, string const go
 // Move Generator:  
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
-string progressiveDeepeningSearch_No_VisitedList(string const initialState, string const goalState, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime, int ultimateMaxDepth) {
+string progressiveDeepeningSearch_No_VisitedList(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime, int ultimateMaxDepth) {
+
+	auto startTime = clock();
+	auto final_path = string("");
+	
+	maxQLength = numOfStateExpansions = 0;
+	for(ultimateMaxDepth = 0; /*true*/; ++ultimateMaxDepth)
+	{
+		auto q = std::deque<Node>{ Node{ initial, "", goal } };
+		auto final_path = string("");
+
+		while (!q.empty())
+		{
+			auto n = q.front();
+
+			++numOfStateExpansions;
+
+			if (n.state == goal)
+			{
+				actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
+				return n.path;
+			}
+
+			q.pop_front();
+
+			if (n.g() > ultimateMaxDepth)
+			{
+				continue;
+			}
+
+			auto children = n.spawn();
+			for (Node child : children)
+			{
+				q.push_front(child);
+			}
+
+			maxQLength = q.size() > maxQLength ? q.size() : maxQLength;
+		}
+	}
+
+	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
 
 	return "";
 }
