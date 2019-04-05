@@ -12,7 +12,7 @@ struct Node
 	Node() = default;
 
 	Node(std::string const& s, std::string const& p, std::string const& g) 
-		: state(s), path(p),goal(g) 
+		: state(s), path(p), goal(g) 
 	{
 	}
 	
@@ -40,10 +40,20 @@ struct Node
 		return sum;
 	}
 
-	std::size_t f_by_manhattan_distance() const
+	std::size_t misplaced_tiles() const
 	{
-		return g() + manhattan_distance();
+		auto count = 0;
+		for (auto i = 0; i != goal.size(); ++i)
+		{
+			count += goal[i] != state[i] ? 1 : 0;
+		}
+		return count;
 	}
+
+	//std::size_t f_by_manhattan_distance() const
+	//{
+	//	return g() + manhattan_distance();
+	//}
 
 	std::vector<Node> spawn() const
 	{

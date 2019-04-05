@@ -195,19 +195,25 @@ string uniformCost_ExpandedList(string const initial, string const goal, int &nu
 // Move Generator:  
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
-string aStar_ExpandedList(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime, int &numOfDeletionsFromMiddleOfHeap, int &numOfLocalLoopsAvoided, int &numOfAttemptedNodeReExpansions, heuristicFunction heuristic) {
+string aStar_ExpandedList(string const initial, string const goal, int &numOfExpansions, int& maxQ, float &actualRunningTime, int &numOfDeletionsFromMiddleOfHeap, int &numOfLocalLoopsAvoided, int &numOfAttemptedNodeReExpansions, heuristicFunction heuristic) {
 	auto startTime = clock();
-	numOfStateExpansions = maxQLength = numOfDeletionsFromMiddleOfHeap = numOfLocalLoopsAvoided = numOfAttemptedNodeReExpansions = 0;
+	numOfExpansions = maxQ = numOfDeletionsFromMiddleOfHeap = numOfLocalLoopsAvoided = numOfAttemptedNodeReExpansions = 0;
 
 	auto expanded = std::unordered_set<string>{ };
-	auto q = PriorityQueue<Node>{ LessByManhattanDistance{} };
+	auto less_by_manhattan_distance = LessByManhattanDistance{};
+	auto less_by_misplaced_tiles = LessByMisplacedTiles{};
+
+	auto use_manhattan = heuristic == manhattanDistance;
+
+	auto q = use_manhattan ? PriorityQueue<Node>{ less_by_manhattan_distance } : PriorityQueue<Node>{ less_by_misplaced_tiles };
+
 	q.push(Node{ initial, "", goal });
 	auto final_path = string("");
 
 	while (!q.empty())
 	{
 		auto n = q.top();
-		++numOfStateExpansions;
+		++numOfExpansions;
 
 		if (n.state == goal)
 		{
@@ -240,11 +246,17 @@ string aStar_ExpandedList(string const initial, string const goal, int &numOfSta
 				{
 					q.push(child);
 				}
-				else if (iterator->f_by_manhattan_distance() > child.f_by_manhattan_distance())
+				else 
 				{
-					++numOfDeletionsFromMiddleOfHeap;
-					q.remove(iterator);
-					q.push(child);
+					auto update_required = use_manhattan ? less_by_manhattan_distance(child, *iterator) : less_by_misplaced_tiles(child, *iterator);
+
+					if (update_required)
+					{
+						++numOfDeletionsFromMiddleOfHeap;
+						q.remove(iterator);
+						q.push(child);
+					}
+
 				}
 			}
 			else
@@ -253,7 +265,7 @@ string aStar_ExpandedList(string const initial, string const goal, int &numOfSta
 			}
 		}
 
-		maxQLength = q.size() > maxQLength ? q.size() : maxQLength;
+		maxQ = q.size() > maxQ ? q.size() : maxQ;
 	}
 
 	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);

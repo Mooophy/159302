@@ -12,6 +12,14 @@ struct LessByManhattanDistance
 {
 	bool operator() (Node const& lhs, Node const& rhs) const
 	{
-		return lhs.f_by_manhattan_distance() < rhs.f_by_manhattan_distance();
+		return lhs.g() + lhs.manhattan_distance() < rhs.g() + rhs.manhattan_distance();
+	}
+};
+
+struct LessByMisplacedTiles
+{
+	bool operator() (Node const& lhs, Node const& rhs) const
+	{
+		return lhs.g() + lhs.misplaced_tiles() < rhs.g() + rhs.misplaced_tiles();
 	}
 };
