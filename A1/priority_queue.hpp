@@ -100,7 +100,6 @@ public:
 	using SizeType = typename Vector::size_type;
 	using Iterator = typename Vector::iterator;
 	using CompareFunc = std::function < bool(ValueType const&, ValueType const&) >;
-	using EqualFunc = std::function<bool(ValueType const&) >;
 
 	explicit PriorityQueue(CompareFunc && c)
 		: v{}, compare{ std::move(c) }
@@ -161,26 +160,11 @@ public:
 		heapify(v.begin(), v.end(), v.begin(), compare);
 	}
 
-	auto update(ValueType const& val, EqualFunc && equal)-> void
+	auto remove(Iterator it)->void
 	{
-		auto it = std::find_if(v.begin(), v.end(), equal);
-		auto found = it != v.end();
-
-		if (!found) 
-		{
-			push(val);
-			return;
-		}
-
-		if (compare(val, *it))
-		{
-			//remove and heapify
-			std::swap(*it, *(v.end() - 1));
-			v.resize(v.size() - 1);
-			heapify(v.begin(), v.end(), it, compare);
-
-			push(val);
-		}				
+		std::swap(*it, *(v.end() - 1));
+		v.resize(v.size() - 1);
+		heapify(v.begin(), v.end(), it, compare);
 	}
 
 private:

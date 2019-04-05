@@ -19,7 +19,7 @@ string breadthFirstSearch(string const initial, string const goal, int &numOfSta
 	maxQLength = numOfStateExpansions = 0;
 	auto startTime = clock();
 
-	auto q = std::deque<Node>{ Node{ initial, "" } };
+	auto q = std::deque<Node>{ Node{ initial, "", goal } };
 	auto final_path = string("");
 
 	while (!q.empty())
@@ -62,7 +62,7 @@ string breadthFirstSearch_with_VisitedList(string const initial, string const go
 	maxQLength = numOfStateExpansions = 0;
 	auto startTime = clock();
 
-	auto q = std::deque<Node>{ Node{ initial, "" } };
+	auto q = std::deque<Node>{ Node{ initial, "", goal } };
 	auto v = std::unordered_set<string>{ initial };
 	auto final_path = string("");
 
@@ -125,39 +125,53 @@ string uniformCost_ExpandedList(string const initial, string const goal, int &nu
 	auto startTime = clock();
 	numOfStateExpansions = maxQLength = numOfDeletionsFromMiddleOfHeap = numOfLocalLoopsAvoided = numOfAttemptedNodeReExpansions = 0;
 
-	auto e = std::unordered_set<string>{ };
+	auto expanded = std::unordered_set<string>{ };
 	auto q = PriorityQueue<Node>{ Shorter{} };
-	q.push(Node{ initial, "" });
+	q.push(Node{ initial, "", goal });
 	auto final_path = string("");
 
 	while (!q.empty())
 	{
-		auto current = q.top();
-
+		auto n = q.top();
 		++numOfStateExpansions;
 
-		if (current.state == goal)
+		if (n.state == goal)
 		{
-			final_path = current.path;
+			final_path = n.path;
 			break;
 		}
 
 		q.pop();
 
-		if (e.end() != e.find(current.state))
+		auto is_expanded = expanded.find(n.state) != expanded.end();
+		if (is_expanded)
 		{
+			++numOfAttemptedNodeReExpansions;
 			continue;
 		}
 
-		e.insert(current.state);
+		expanded.insert(n.state);
 
-		auto children = current.spawn();
+		auto children = n.spawn();
 
 		for (auto child : children)
 		{
-			if (e.end() == e.find(child.state)) 
+			if (expanded.end() == expanded.find(child.state))
 			{
-				q.update(child, [child](Node const& c) { return c.state == child.state; });
+				auto predicate = [child](Node const& c) { return c.state == child.state; };
+				auto iterator = std::find_if(q.data().begin(), q.data().end(), predicate);
+				auto found = iterator != q.data().end();
+
+				if (!found) 
+				{
+					q.push(child);
+				}
+				else if (iterator->g() > child.g()) 
+				{
+					++numOfDeletionsFromMiddleOfHeap;
+					q.remove(iterator);
+					q.push(child);
+				}
 			}
 			else 
 			{
@@ -181,35 +195,70 @@ string uniformCost_ExpandedList(string const initial, string const goal, int &nu
 // Move Generator:  
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
-string aStar_ExpandedList(string const initialState, string const goalState, int &numOfStateExpansions, int& maxQLength,
-	float &actualRunningTime, int &numOfDeletionsFromMiddleOfHeap, int &numOfLocalLoopsAvoided, int &numOfAttemptedNodeReExpansions, heuristicFunction heuristic) {
+string aStar_ExpandedList(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime, int &numOfDeletionsFromMiddleOfHeap, int &numOfLocalLoopsAvoided, int &numOfAttemptedNodeReExpansions, heuristicFunction heuristic) {
+	auto startTime = clock();
+	numOfStateExpansions = maxQLength = numOfDeletionsFromMiddleOfHeap = numOfLocalLoopsAvoided = numOfAttemptedNodeReExpansions = 0;
 
-	string path;
-	clock_t startTime;
+	auto expanded = std::unordered_set<string>{ };
+	auto q = PriorityQueue<Node>{ LessByManhattanDistance{} };
+	q.push(Node{ initial, "", goal });
+	auto final_path = string("");
 
-	numOfDeletionsFromMiddleOfHeap = 0;
-	numOfLocalLoopsAvoided = 0;
-	numOfAttemptedNodeReExpansions = 0;
+	while (!q.empty())
+	{
+		auto n = q.top();
+		++numOfStateExpansions;
 
+		if (n.state == goal)
+		{
+			final_path = n.path;
+			break;
+		}
 
-	// cout << "------------------------------" << endl;
-	// cout << "<<aStar_ExpandedList>>" << endl;
-	// cout << "------------------------------" << endl;
-	actualRunningTime = 0.0;
-	startTime = clock();
-	srand(time(NULL)); //RANDOM NUMBER GENERATOR - ONLY FOR THIS DEMO.  YOU REALLY DON'T NEED THIS! DISABLE THIS STATEMENT.
-	maxQLength = rand() % 200; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY.
-	numOfStateExpansions = rand() % 200; //AT THE MOMENT, THIS IS JUST GENERATING SOME DUMMY VALUE.  YOUR ALGORITHM IMPLEMENTATION SHOULD COMPUTE THIS PROPERLY
+		q.pop();
 
+		auto is_expanded = expanded.find(n.state) != expanded.end();
+		if (is_expanded)
+		{
+			++numOfAttemptedNodeReExpansions;
+			continue;
+		}
 
+		expanded.insert(n.state);
 
+		auto children = n.spawn();
 
-//***********************************************************************************************************
-	actualRunningTime =77777777;
-	path = "DDRRLLLUUURDLUDURDLUU"; //this is just a dummy path for testing the function
+		for (auto child : children)
+		{
+			if (expanded.end() == expanded.find(child.state))
+			{
+				auto predicate = [child](Node const& c) { return c.state == child.state; };
+				auto iterator = std::find_if(q.data().begin(), q.data().end(), predicate);
+				auto found = iterator != q.data().end();
 
-	return path;
+				if (!found)
+				{
+					q.push(child);
+				}
+				else if (iterator->f_by_manhattan_distance() > child.f_by_manhattan_distance())
+				{
+					++numOfDeletionsFromMiddleOfHeap;
+					q.remove(iterator);
+					q.push(child);
+				}
+			}
+			else
+			{
+				++numOfLocalLoopsAvoided;
+			}
+		}
 
+		maxQLength = q.size() > maxQLength ? q.size() : maxQLength;
+	}
+
+	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
+
+	return final_path;
 }
 
 
