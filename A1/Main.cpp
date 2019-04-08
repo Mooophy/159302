@@ -20,9 +20,21 @@
 #include <iomanip>
 #include <algorithm> //used by transform - to lower case
 #include <exception>
+#include <signal.h>
 
 #include "graphics2.h"
 #include "algorithm.h"
+
+
+
+extern "C" void my_function_to_handle_aborts(int signal_number)
+{
+	cout << "!!!!!!!!!!!!!" << endl;
+}
+
+
+
+
 
 using namespace std;
 
@@ -262,9 +274,6 @@ void AnimateSolution(string const initialState, string const goalState, string p
       displayBoard(strState);
       
       step++;
-
-
-	  //system("pause");
 	}
 	
 	delete p; //clear memory	
@@ -282,6 +291,8 @@ void AnimateSolution(string const initialState, string const goalState, string p
 
 int main( int argc, char* argv[] ){
    
+	signal(SIGABRT, &my_function_to_handle_aborts);
+
    string path;
 
    //~ cout << "=========<< SEARCH ALGORITHMS >>=========" << endl;
@@ -338,8 +349,8 @@ try{
 	//Run algorithm
 
     if(algorithmSelected == "breadth_first_search" ){
-        
-        path = breadthFirstSearch(initialState, goalState, numOfStateExpansions, maxQLength, actualRunningTime);
+
+		path = breadthFirstSearch(initialState, goalState, numOfStateExpansions, maxQLength, actualRunningTime);
 
     } else if(algorithmSelected == "breadth_first_search_vlist" ){
         

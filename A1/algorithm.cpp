@@ -1,6 +1,7 @@
 #include <deque>
 #include <unordered_set>
 #include <cstdlib>
+#include <new>
 #include "node.hpp"
 #include "algorithm.h"
 #include "priority_queue.hpp"
@@ -94,7 +95,7 @@ string progressiveDeepeningSearch_No_VisitedList(string const initial, string co
 	auto startTime = clock();
 	
 	maxQLength = numOfStateExpansions = 0;
-	for(ultimateMaxDepth = 0; /*true*/; ++ultimateMaxDepth)
+	for(ultimateMaxDepth = 1; /*true*/; ++ultimateMaxDepth)
 	{
 		auto q = std::deque<Node>{ Node{ initial, "", goal } };
 

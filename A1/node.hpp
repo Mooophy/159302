@@ -12,16 +12,11 @@ struct Node
 	Node() = default;
 
 	Node(std::string const& s, std::string const& p, std::string const& g) 
-		: state(s), path(p), goal(g) 
+		: state(s), path(p), goal(g), pos(state.find('0'))
 	{
 	}
 	
 	std::string state, path, goal;
-
-	std::size_t pos() const
-	{
-		return state.find('0');
-	}
 
 	std::size_t g() const
 	{
@@ -78,6 +73,7 @@ struct Node
 	}
 
 private:
+	std::size_t pos;
 
 	bool can_up() const
 	{
@@ -86,14 +82,14 @@ private:
 			3, 4, 5, 
 			6, 7, 8 
 		};
-		return (path.size() == 0 || path.back() != 'D') && contains(v, pos());
+		return (path.size() == 0 || path.back() != 'D') && contains(v, pos);
 	}
 
 	Node move_up() const
 	{
-		auto n = Node{ state, path + "U", goal };
-		std::swap(n.state[n.pos() - 3], n.state[n.pos()]);
-		return n;
+		auto s = std::string(state);
+		std::swap(s[pos - 3], s[pos]);
+		return Node{s, path + "U", goal};
 	}
 
 	bool can_right() const
@@ -104,14 +100,14 @@ private:
 			3, 4,
 			6, 7
 		};
-		return (path.size() == 0 || path.back() != 'L') && contains(v, pos());
+		return (path.size() == 0 || path.back() != 'L') && contains(v, pos);
 	}
 
 	Node move_right() const
 	{
-		auto n = Node{ state, path + "R", goal };
-		std::swap(n.state[n.pos() + 1], n.state[n.pos()]);
-		return n;
+		auto s = std::string(state);
+		std::swap(s[pos + 1], s[pos]);
+		return Node{ s, path + "R", goal };
 	}
 
 	bool can_down() const
@@ -121,14 +117,14 @@ private:
 			0, 1, 2,
 			3, 4, 5
 		};
-		return (path.size() == 0 || path.back() != 'U') && contains(v, pos());
+		return (path.size() == 0 || path.back() != 'U') && contains(v, pos);
 	}
 
 	Node move_down() const
 	{
-		auto n = Node{ state, path + "D", goal };
-		std::swap(n.state[n.pos() + 3], n.state[n.pos()]);
-		return n;
+		auto s = std::string(state);
+		std::swap(s[pos + 3], s[pos]);
+		return Node{ s, path + "D", goal };
 	}
 
 	bool can_left() const
@@ -139,14 +135,14 @@ private:
 			4, 5,
 			7, 8
 		};
-		return (path.size() == 0 || path.back() != 'R') && contains(v, pos());
+		return (path.size() == 0 || path.back() != 'R') && contains(v, pos);
 	}
 
 	Node move_left() const
 	{
-		auto n = Node{ state, path + "L", goal };
-		std::swap(n.state[n.pos() - 1], n.state[n.pos()]);
-		return n;
+		auto s = std::string(state);
+		std::swap(s[pos - 1], s[pos]);
+		return Node{ s, path + "L", goal };
 	}
 
 	bool contains(std::vector<int> const& v, int n) const
