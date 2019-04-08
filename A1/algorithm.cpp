@@ -5,8 +5,6 @@
 #include "priority_queue.hpp"
 #include "shorter.hpp"
 
-using namespace std;
-
 ///////////////////////////////////////////////////////////////////////////////////////////
 //
 // Search Algorithm:  Breadth-First Search 
@@ -20,7 +18,6 @@ string breadthFirstSearch(string const initial, string const goal, int &numOfSta
 	auto startTime = clock();
 
 	auto q = std::deque<Node>{ Node{ initial, "", goal } };
-	auto final_path = string("");
 
 	while (!q.empty())
 	{
@@ -30,8 +27,8 @@ string breadthFirstSearch(string const initial, string const goal, int &numOfSta
 
 		if (current.state == goal)
 		{
-			final_path = current.path;
-			break;
+			actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
+			return current.path;
 		}
 
 		q.pop_front();
@@ -46,8 +43,7 @@ string breadthFirstSearch(string const initial, string const goal, int &numOfSta
 	}
 
 	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
-
-	return final_path;
+	return "";
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +60,6 @@ string breadthFirstSearch_with_VisitedList(string const initial, string const go
 
 	auto q = std::deque<Node>{ Node{ initial, "", goal } };
 	auto v = std::unordered_set<string>{ initial };
-	auto final_path = string("");
 
 	while (!q.empty())
 	{
@@ -74,8 +69,8 @@ string breadthFirstSearch_with_VisitedList(string const initial, string const go
 
 		if (current.state == goal)
 		{
-			final_path = current.path;
-			break;
+			actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
+			return current.path;
 		}
 
 		q.pop_front();
@@ -94,8 +89,7 @@ string breadthFirstSearch_with_VisitedList(string const initial, string const go
 	}
 
 	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);	
-
-	return final_path;
+	return "";
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -108,13 +102,11 @@ string breadthFirstSearch_with_VisitedList(string const initial, string const go
 string progressiveDeepeningSearch_No_VisitedList(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime, int ultimateMaxDepth) {
 
 	auto startTime = clock();
-	auto final_path = string("");
 	
 	maxQLength = numOfStateExpansions = 0;
 	for(ultimateMaxDepth = 0; /*true*/; ++ultimateMaxDepth)
 	{
 		auto q = std::deque<Node>{ Node{ initial, "", goal } };
-		auto final_path = string("");
 
 		while (!q.empty())
 		{
@@ -146,12 +138,8 @@ string progressiveDeepeningSearch_No_VisitedList(string const initial, string co
 	}
 
 	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
-
 	return "";
 }
-
-
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -168,7 +156,6 @@ string uniformCost_ExpandedList(string const initial, string const goal, int &nu
 	auto expanded = std::unordered_set<string>{ };
 	auto q = PriorityQueue<Node>{ Shorter{} };
 	q.push(Node{ initial, "", goal });
-	auto final_path = string("");
 
 	while (!q.empty())
 	{
@@ -177,8 +164,8 @@ string uniformCost_ExpandedList(string const initial, string const goal, int &nu
 
 		if (n.state == goal)
 		{
-			final_path = n.path;
-			break;
+			actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
+			return n.path;
 		}
 
 		q.pop();
@@ -223,8 +210,7 @@ string uniformCost_ExpandedList(string const initial, string const goal, int &nu
 	}
 
 	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
-
-	return final_path;
+	return "";
 }
 
 
@@ -248,7 +234,6 @@ string aStar_ExpandedList(string const initial, string const goal, int &numOfExp
 	auto q = use_manhattan ? PriorityQueue<Node>{ less_by_manhattan_distance } : PriorityQueue<Node>{ less_by_misplaced_tiles };
 
 	q.push(Node{ initial, "", goal });
-	auto final_path = string("");
 
 	while (!q.empty())
 	{
@@ -257,8 +242,8 @@ string aStar_ExpandedList(string const initial, string const goal, int &numOfExp
 
 		if (n.state == goal)
 		{
-			final_path = n.path;
-			break;
+			actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
+			return n.path;
 		}
 
 		q.pop();
@@ -309,8 +294,7 @@ string aStar_ExpandedList(string const initial, string const goal, int &numOfExp
 	}
 
 	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
-
-	return final_path;
+	return "";
 }
 
 

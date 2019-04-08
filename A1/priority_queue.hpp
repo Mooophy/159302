@@ -160,7 +160,7 @@ public:
 		heapify(v.begin(), v.end(), v.begin(), compare);
 	}
 
-	auto remove(Iterator it)->void
+	auto remove(Iterator it) -> void
 	{
 		std::swap(*it, *(v.end() - 1));
 		v.resize(v.size() - 1);

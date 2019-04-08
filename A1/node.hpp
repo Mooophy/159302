@@ -50,11 +50,6 @@ struct Node
 		return count;
 	}
 
-	//std::size_t f_by_manhattan_distance() const
-	//{
-	//	return g() + manhattan_distance();
-	//}
-
 	std::vector<Node> spawn() const
 	{
 		std::vector<Node> children;
