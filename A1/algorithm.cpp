@@ -1,17 +1,20 @@
 #include <deque>
 #include <unordered_set>
+#include <cstdlib>
 #include "node.hpp"
 #include "algorithm.h"
 #include "priority_queue.hpp"
 #include "shorter.hpp"
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//
-// Search Algorithm:  Breadth-First Search 
-//
-// Move Generator:  
-//
-////////////////////////////////////////////////////////////////////////////////////////////
+struct Hash {
+	size_t operator()(std::string const& state) const {
+		auto h = std::atoi(state.c_str());
+		return std::hash<int>()(h);
+	}
+};
+
+using HashSet = std::unordered_set<string, Hash>;
+
 string breadthFirstSearch(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime) {
 
 	maxQLength = numOfStateExpansions = 0;
@@ -22,7 +25,6 @@ string breadthFirstSearch(string const initial, string const goal, int &numOfSta
 	while (!q.empty())
 	{
 		auto current = q.front();
-
 		++numOfStateExpansions;
 
 		if (current.state == goal)
@@ -46,20 +48,13 @@ string breadthFirstSearch(string const initial, string const goal, int &numOfSta
 	return "";
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//
-// Search Algorithm:  Breadth-First Search with VisitedList
-//
-// Move Generator:  
-//
-////////////////////////////////////////////////////////////////////////////////////////////
 string breadthFirstSearch_with_VisitedList(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime) {
 	
 	maxQLength = numOfStateExpansions = 0;
 	auto startTime = clock();
 
 	auto q = std::deque<Node>{ Node{ initial, "", goal } };
-	auto v = std::unordered_set<string>{ initial };
+	auto v = HashSet{ initial };
 
 	while (!q.empty())
 	{
@@ -92,13 +87,6 @@ string breadthFirstSearch_with_VisitedList(string const initial, string const go
 	return "";
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//
-// Search Algorithm:  
-//
-// Move Generator:  
-//
-////////////////////////////////////////////////////////////////////////////////////////////
 string progressiveDeepeningSearch_No_VisitedList(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime, int ultimateMaxDepth) {
 
 	auto startTime = clock();
@@ -141,19 +129,12 @@ string progressiveDeepeningSearch_No_VisitedList(string const initial, string co
 	return "";
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//
-// Search Algorithm:  
-//
-// Move Generator:  
-//
-////////////////////////////////////////////////////////////////////////////////////////////
 string uniformCost_ExpandedList(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime, int &numOfDeletionsFromMiddleOfHeap, int &numOfLocalLoopsAvoided, int &numOfAttemptedNodeReExpansions) {
 
 	auto startTime = clock();
 	numOfStateExpansions = maxQLength = numOfDeletionsFromMiddleOfHeap = numOfLocalLoopsAvoided = numOfAttemptedNodeReExpansions = 0;
 
-	auto expanded = std::unordered_set<string>{ };
+	auto expanded = HashSet{ };
 	auto q = PriorityQueue<Node>{ Shorter{} };
 	q.push(Node{ initial, "", goal });
 
@@ -214,18 +195,11 @@ string uniformCost_ExpandedList(string const initial, string const goal, int &nu
 }
 
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//
-// Search Algorithm:  
-//
-// Move Generator:  
-//
-////////////////////////////////////////////////////////////////////////////////////////////
 string aStar_ExpandedList(string const initial, string const goal, int &numOfExpansions, int& maxQ, float &actualRunningTime, int &numOfDeletionsFromMiddleOfHeap, int &numOfLocalLoopsAvoided, int &numOfAttemptedNodeReExpansions, heuristicFunction heuristic) {
 	auto startTime = clock();
 	numOfExpansions = maxQ = numOfDeletionsFromMiddleOfHeap = numOfLocalLoopsAvoided = numOfAttemptedNodeReExpansions = 0;
 
-	auto expanded = std::unordered_set<string>{ };
+	auto expanded = HashSet{ };
 	auto less_by_manhattan_distance = LessByManhattanDistance{};
 	auto less_by_misplaced_tiles = LessByMisplacedTiles{};
 
@@ -281,7 +255,6 @@ string aStar_ExpandedList(string const initial, string const goal, int &numOfExp
 						q.remove(iterator);
 						q.push(child);
 					}
-
 				}
 			}
 			else
@@ -296,7 +269,3 @@ string aStar_ExpandedList(string const initial, string const goal, int &numOfExp
 	actualRunningTime = ((float)(clock() - startTime) / CLOCKS_PER_SEC);
 	return "";
 }
-
-
-
-
