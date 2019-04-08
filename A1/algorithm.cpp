@@ -6,8 +6,10 @@
 #include "priority_queue.hpp"
 #include "shorter.hpp"
 
-struct Hash {
-	size_t operator()(std::string const& state) const {
+struct Hash 
+{
+	size_t operator()(std::string const& state) const 
+	{
 		auto h = std::atoi(state.c_str());
 		return std::hash<int>()(h);
 	}
