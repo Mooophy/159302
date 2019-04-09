@@ -25,17 +25,6 @@
 #include "graphics2.h"
 #include "algorithm.h"
 
-
-
-extern "C" void my_function_to_handle_aborts(int signal_number)
-{
-	cout << "!!!!!!!!!!!!!" << endl;
-}
-
-
-
-
-
 using namespace std;
 
 #define OUTPUT_LENGTH 2 /* Length of output string. */
@@ -290,25 +279,14 @@ void AnimateSolution(string const initialState, string const goalState, string p
  */
 
 int main( int argc, char* argv[] ){
-   
-	signal(SIGABRT, &my_function_to_handle_aborts);
 
    string path;
 
-   //~ cout << "=========<< SEARCH ALGORITHMS >>=========" << endl;
 	if(argc < 5){
 		cout << "SYNTAX: main.exe <TYPE_OF_RUN = \"batch_run\" or \"single_run\"> ALGORITHM_NAME \"INITIAL STATE\" \"GOAL STATE\" " << endl;
 		exit(0);
 	}
     
-   //for testing only 
-   //~ cout << "Parameters supplied" << endl;
-   //~ for(int i=1; i < argc; i++){
-		
-		//~ cout << setw(2) << i << ") " << argv[i] << endl;
-		
-   //~ }
-	
 	string typeOfRun(argv[1]);
 	string algorithmSelected(argv[2]);
 	string initialState(argv[3]);
@@ -331,15 +309,6 @@ int main( int argc, char* argv[] ){
     // init graphics
     int graphDriver = 0;
     int graphMode = 0;
-   
-  
-    
-    
-    //---    
-    
-
-    // cout << "typeOfRun = " << typeOfRun << endl;
-    // cout << "algorithmSelected = " << algorithmSelected << endl;
 	
 try{
 
