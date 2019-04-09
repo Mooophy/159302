@@ -6,6 +6,7 @@
 #include "algorithm.h"
 #include "priority_queue.hpp"
 #include "shorter.hpp"
+#include "solvable.hpp"
 
 struct Hash 
 {
@@ -19,6 +20,11 @@ struct Hash
 using HashSet = std::unordered_set<string, Hash>;
 
 string breadthFirstSearch(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime) {
+	
+	if (!Solvable{ initial, goal }.is())
+	{
+		return "";
+	}
 
 	maxQLength = numOfStateExpansions = 0;
 	auto startTime = clock();
@@ -52,7 +58,11 @@ string breadthFirstSearch(string const initial, string const goal, int &numOfSta
 }
 
 string breadthFirstSearch_with_VisitedList(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime) {
-	
+	if (!Solvable{ initial, goal }.is())
+	{
+		return "";
+	}
+
 	maxQLength = numOfStateExpansions = 0;
 	auto startTime = clock();
 
@@ -91,6 +101,10 @@ string breadthFirstSearch_with_VisitedList(string const initial, string const go
 }
 
 string progressiveDeepeningSearch_No_VisitedList(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime, int ultimateMaxDepth) {
+	if (!Solvable{ initial, goal }.is())
+	{
+		return "";
+	}
 
 	auto startTime = clock();
 	
@@ -133,6 +147,10 @@ string progressiveDeepeningSearch_No_VisitedList(string const initial, string co
 }
 
 string uniformCost_ExpandedList(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime, int &numOfDeletionsFromMiddleOfHeap, int &numOfLocalLoopsAvoided, int &numOfAttemptedNodeReExpansions) {
+	if (!Solvable{ initial, goal }.is())
+	{
+		return "";
+	}
 
 	auto startTime = clock();
 	numOfStateExpansions = maxQLength = numOfDeletionsFromMiddleOfHeap = numOfLocalLoopsAvoided = numOfAttemptedNodeReExpansions = 0;
@@ -199,6 +217,11 @@ string uniformCost_ExpandedList(string const initial, string const goal, int &nu
 
 
 string aStar_ExpandedList(string const initial, string const goal, int &numOfExpansions, int& maxQ, float &actualRunningTime, int &numOfDeletionsFromMiddleOfHeap, int &numOfLocalLoopsAvoided, int &numOfAttemptedNodeReExpansions, heuristicFunction heuristic) {
+	if (!Solvable{ initial, goal }.is())
+	{
+		return "";
+	}
+	
 	auto startTime = clock();
 	numOfExpansions = maxQ = numOfDeletionsFromMiddleOfHeap = numOfLocalLoopsAvoided = numOfAttemptedNodeReExpansions = 0;
 
