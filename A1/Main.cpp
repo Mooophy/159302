@@ -24,6 +24,7 @@
 
 #include "graphics2.h"
 #include "algorithm.h"
+#include "node.hpp"
 
 using namespace std;
 

@@ -26,10 +26,12 @@ string breadthFirstSearch(string const initial, string const goal, int &numOfSta
 		return "";
 	}
 
+	Case::goal = goal;
+
 	maxQLength = numOfStateExpansions = 0;
 	auto startTime = clock();
 
-	auto q = std::deque<Node>{ Node{ initial, "", goal } };
+	auto q = std::deque<Node>{ Node{ initial, "" } };
 
 	while (!q.empty())
 	{
@@ -63,10 +65,12 @@ string breadthFirstSearch_with_VisitedList(string const initial, string const go
 		return "";
 	}
 
+	Case::goal = goal;
+
 	maxQLength = numOfStateExpansions = 0;
 	auto startTime = clock();
 
-	auto q = std::deque<Node>{ Node{ initial, "", goal } };
+	auto q = std::deque<Node>{ Node{ initial, "" } };
 	auto v = HashSet{ initial };
 
 	while (!q.empty())
@@ -106,12 +110,14 @@ string progressiveDeepeningSearch_No_VisitedList(string const initial, string co
 		return "";
 	}
 
+	Case::goal = goal;
+
 	auto startTime = clock();
 	
 	maxQLength = numOfStateExpansions = 0;
 	for(ultimateMaxDepth = 1; /*true*/; ++ultimateMaxDepth)
 	{
-		auto q = std::deque<Node>{ Node{ initial, "", goal } };
+		auto q = std::deque<Node>{ Node{ initial, ""} };
 
 		while (!q.empty())
 		{
@@ -152,12 +158,14 @@ string uniformCost_ExpandedList(string const initial, string const goal, int &nu
 		return "";
 	}
 
+	Case::goal = goal;
+
 	auto startTime = clock();
 	numOfStateExpansions = maxQLength = numOfDeletionsFromMiddleOfHeap = numOfLocalLoopsAvoided = numOfAttemptedNodeReExpansions = 0;
 
 	auto expanded = HashSet{ };
 	auto q = PriorityQueue<Node>{ Shorter{} };
-	q.push(Node{ initial, "", goal });
+	q.push(Node{ initial, "" });
 
 	while (!q.empty())
 	{
@@ -221,6 +229,8 @@ string aStar_ExpandedList(string const initial, string const goal, int &numOfExp
 	{
 		return "";
 	}
+
+	Case::goal = goal;
 	
 	auto startTime = clock();
 	numOfExpansions = maxQ = numOfDeletionsFromMiddleOfHeap = numOfLocalLoopsAvoided = numOfAttemptedNodeReExpansions = 0;
@@ -233,7 +243,7 @@ string aStar_ExpandedList(string const initial, string const goal, int &numOfExp
 
 	auto q = use_manhattan ? PriorityQueue<Node>{ less_by_manhattan_distance } : PriorityQueue<Node>{ less_by_misplaced_tiles };
 
-	q.push(Node{ initial, "", goal });
+	q.push(Node{ initial, "" });
 
 	while (!q.empty())
 	{
