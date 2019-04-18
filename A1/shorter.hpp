@@ -1,13 +1,19 @@
 #include "node.hpp"
 
+//
+//	Functor to compare two nodes by comparing g value
+//
 struct Shorter
 {
 	bool operator() (Node const& lhs, Node const& rhs) const
 	{
-		return lhs.path.size() < rhs.path.size();
+		return lhs.g() < rhs.g();
 	}
 };
 
+//
+//	Functor comparing two nodes by comparing g value + manhattan distance
+//
 struct LessByManhattanDistance
 {
 	bool operator() (Node const& lhs, Node const& rhs) const
@@ -16,6 +22,9 @@ struct LessByManhattanDistance
 	}
 };
 
+//
+//	Functor comparing two nodes by comparing g value + misplaced tiles
+//
 struct LessByMisplacedTiles
 {
 	bool operator() (Node const& lhs, Node const& rhs) const

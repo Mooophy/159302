@@ -2,11 +2,17 @@
 #include <string>
 #include <vector>
 
+//
+//	xor operator
+//
 inline bool get_xor(bool a, bool b)
 {
 	return !a != !b;
 }
 
+//
+// A combination like (1, 2) (3, 4)
+//
 struct Combination
 {
 	Combination() = default;
@@ -31,6 +37,9 @@ struct Combination
 	bool is_inversion;
 };
 
+//
+//	A class that offers ability to deterimine whether a case is solvable
+//
 struct Solvable
 {
 	Solvable() = default;

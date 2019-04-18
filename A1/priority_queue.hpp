@@ -1,10 +1,8 @@
 //
-//  This file implemented a custom priority queue data structure. Compared with std::priority_queue, 
-//  this one allows to access and change any item held in it by openning public interface to its 
-//  underlying data structure. This feature is essential for "uniform cost search" and "A* with strict
-//  expanded list".
+//  This file implemented a custom priority queue data. Compared with std::priority_queue, 
+//  this one allows accessing and changing items held inside it 
 //
-//  Reference : Chapter 6, "Introduction to Algorithms 3rd ed", aka CLRS.
+//  Reference : Chapter 6, "Introduction to Algorithms 3rd ed".
 //
 
 #pragma once
@@ -14,6 +12,10 @@
 #include <algorithm>
 
 
+//
+//  parent
+//  O(1)
+//
 template<typename Iterator>
 auto inline parent(Iterator first, Iterator it) -> Iterator
 {

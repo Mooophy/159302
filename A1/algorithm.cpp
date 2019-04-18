@@ -8,6 +8,9 @@
 #include "shorter.hpp"
 #include "solvable.hpp"
 
+//
+// A hash functor that calculates hash value
+//
 struct Hash 
 {
 	size_t operator()(std::string const& state) const 
@@ -19,6 +22,9 @@ struct Hash
 
 using HashSet = std::unordered_set<string, Hash>;
 
+//
+//	Breadth First Search without visited list
+//
 string breadthFirstSearch(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime) {
 	
 	if (!Solvable{ initial, goal }.is())
@@ -59,6 +65,9 @@ string breadthFirstSearch(string const initial, string const goal, int &numOfSta
 	return "";
 }
 
+//
+//	Breadth First Search with visited list
+//
 string breadthFirstSearch_with_VisitedList(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime) {
 	if (!Solvable{ initial, goal }.is())
 	{
@@ -104,6 +113,9 @@ string breadthFirstSearch_with_VisitedList(string const initial, string const go
 	return "";
 }
 
+//
+//	Progressive Deepening Search without visited list
+//
 string progressiveDeepeningSearch_No_VisitedList(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime, int ultimateMaxDepth) {
 	if (!Solvable{ initial, goal }.is())
 	{
@@ -152,6 +164,9 @@ string progressiveDeepeningSearch_No_VisitedList(string const initial, string co
 	return "";
 }
 
+//
+//	Uniform Cost Search with expanded list
+//
 string uniformCost_ExpandedList(string const initial, string const goal, int &numOfStateExpansions, int& maxQLength, float &actualRunningTime, int &numOfDeletionsFromMiddleOfHeap, int &numOfLocalLoopsAvoided, int &numOfAttemptedNodeReExpansions) {
 	if (!Solvable{ initial, goal }.is())
 	{
@@ -223,7 +238,9 @@ string uniformCost_ExpandedList(string const initial, string const goal, int &nu
 	return "";
 }
 
-
+//
+//	A* with expanded list
+//
 string aStar_ExpandedList(string const initial, string const goal, int &numOfExpansions, int& maxQ, float &actualRunningTime, int &numOfDeletionsFromMiddleOfHeap, int &numOfLocalLoopsAvoided, int &numOfAttemptedNodeReExpansions, heuristicFunction heuristic) {
 	if (!Solvable{ initial, goal }.is())
 	{
