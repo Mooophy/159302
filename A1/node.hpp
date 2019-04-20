@@ -34,7 +34,7 @@ struct Node
 		{
 			auto g_index = Case::goal.find(c);
 			auto c_index = state.find(c);
-			sum += abs(g_index / 3 - c_index / 3) + abs(g_index % 3 - c_index % 3);
+			sum += abs(static_cast<int>(g_index / 3 - c_index / 3)) + abs(static_cast<int>(g_index % 3 - c_index % 3));
 		}
 		return sum;
 	}
