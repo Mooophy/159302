@@ -7,11 +7,7 @@
 
 void initFuzzyRules(fuzzy_system_rec *fl) {
 
-	const int
-		no_of_x_rules = 25,
-		no_of_theta_rules = 25;
-
-	int i;
+	const int no_of_x_rules = 25, no_of_theta_rules = 25;
 
 	std::vector<int> famm_theta = {
 		out_nvl, out_nvl, out_nvl, out_nl, out_ze,
@@ -21,10 +17,18 @@ void initFuzzyRules(fuzzy_system_rec *fl) {
 		out_ze, out_pvl, out_pvl, out_pvl, out_pvl
 	};
 
+	std::vector<int> famm_x = {
+		out_pl, out_pl, out_pm, out_ps, out_ze,
+		out_pl, out_pm, out_ps, out_ze, out_ns,
+		out_pm, out_ps, out_ze, out_ns, out_nm,
+		out_ps, out_ze, out_ns, out_nm, out_nl,
+		out_ze, out_ns, out_nm, out_nl, out_nl
+	};
+
 	//---------------------------------------------------------------------------- 	
 	//THETA vs. THETA_DOT	
 	//   
-	for (i = 0; i < no_of_theta_rules; i++) {
+	for (auto i = 0; i < no_of_theta_rules; i++) {
 		fl->rules[i].inp_index[0] = in_theta;
 		fl->rules[i].inp_index[1] = in_theta_dot;
 		fl->rules[i].out_fuzzy_set = famm_theta[i];
@@ -119,29 +123,15 @@ void initFuzzyRules(fuzzy_system_rec *fl) {
  //X vs. X_DOT
  //
 
-	std::vector<int> famm_x = {
-		out_pl, out_pm, out_ze, out_ze, out_ze,
-		out_pm, out_ze, out_ze, out_ze, out_ze,
-		out_ze, out_ze, out_ze, out_ze, out_ze,
-		out_ze, out_ze, out_ze, out_ze, out_nm,
-		out_ze, out_ze, out_ze, out_nm, out_nl
-	};
 
-	for (i = 0; i < no_of_x_rules; i++) {
+
+	for (auto i = 0; i < no_of_x_rules; i++) {
 		fl->rules[i + no_of_theta_rules].inp_index[0] = in_x;
 		fl->rules[i + no_of_theta_rules].inp_index[1] = in_x_dot;
 		fl->rules[i + no_of_theta_rules].out_fuzzy_set = famm_x[i];
 	}
 
 	/* Regions for x and x_dot: */
-   //sample only
-   // fl->rules[25+0].inp_fuzzy_set[0] = in_nl;
-   // fl->rules[25+0].inp_fuzzy_set[1] = in_nl;
-
-   //and so on, and so forth...
-
-   // fl->rules[25+24].out_fuzzy_set = out_nl;
-
 	fl->rules[25].inp_fuzzy_set[0] = in_nl;
 	fl->rules[25].inp_fuzzy_set[1] = in_nl;
 
@@ -278,15 +268,15 @@ void initFuzzySystem(fuzzy_system_rec *fl) {
 	// fl->output_values [out_nvl]=-95.0;
 	// fl->output_values [out_nl] = -85.0;
 
-	fl->output_values[out_nvl] = -250.0;
-	fl->output_values[out_nl] = -60.0;
-	fl->output_values[out_nm] = -30.0;
-	fl->output_values[out_ns] = -15.0;
+	fl->output_values[out_nvl] = -1060.0;
+	fl->output_values[out_nl] = -160.0;
+	fl->output_values[out_nm] = -80.0;
+	fl->output_values[out_ns] = -20.0;
 	fl->output_values[out_ze] = 0;
-	fl->output_values[out_ps] = 15.0;
-	fl->output_values[out_pm] = 30.0;
-	fl->output_values[out_pl] = 60.0;
-	fl->output_values[out_pvl] = 250.0;
+	fl->output_values[out_ps] = 20.0;
+	fl->output_values[out_pm] = 80.0;
+	fl->output_values[out_pl] = 160.0;
+	fl->output_values[out_pvl] = 1140.0;
 
 
 	fl->rules = (rule *)malloc((size_t)(fl->no_of_rules * sizeof(rule)));
@@ -406,10 +396,6 @@ float fuzzy_system(float inputs[], fuzzy_system_rec fz) {
 
 		sum2 += weight;
 	} /* end i  */
-
-	//std::cout << "sum1 = " << sum1 << std::endl;
-	//std::cout << "sum2 = " << sum2 << std::endl;
-	//std::cout << "weig = " << weight << std::endl;
 
 
 	if (fabs(sum2) < TOO_SMALL) {
