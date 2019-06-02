@@ -35,9 +35,6 @@ void initFuzzyRules(fuzzy_system_rec *fl) {
 	}
 
 	/* Regions for theta and theta_dot: */
-	//sample only
-	// fl->rules[0].inp_fuzzy_set[0] = in_nl;
-	// fl->rules[0].inp_fuzzy_set[1] = in_nl;
 
 	//nl
 	fl->rules[0].inp_fuzzy_set[0] = in_nl;
